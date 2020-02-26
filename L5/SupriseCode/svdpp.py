@@ -27,15 +27,12 @@ for  rawfile  in   os.listdir(basedir):
 
 print("开始读入数据....")
 reader = Reader(line_format='user item rating', sep=',')
-data = Dataset.load_from_df(data, reader=reader)
+data = Dataset.load_from_df(pd.DataFrame(data), reader=reader)
 train_set = data.build_full_trainset()
 print("数据加载成功....")
 
 
 #  预测probe数据集
-# F:\rs\L5\netflix-prize-data\probegoodX
-
-# basedir  ="./netflix-prize-data/probegoodX"
 basedir  =r"../probegoodX"
 newfilepath_list =[] 
 for  file_name in  os.listdir(  basedir) :
