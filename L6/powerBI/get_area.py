@@ -15,32 +15,33 @@ text = requests.get("https://lab.isaaclin.cn/nCoV/api/area", verify=False).text
 alldata = json.loads(text, encoding='utf-8')
 data = alldata.get('results')
 
-infos = []
-for ele in data:
+infos = [] 
+for line  in data :
+    try :
+        for city in line['cities']:
+            info ={}
+            for  k in  city.keys() :
+                if k != "cityName" :
+                    info["city_"+k] =  city[k]
+                else :
+                    info[k] = city[k]
+            others = [ k for k in line.keys() if k != "cities"]
+            for k in others :
+                info[k] = line[k]
+            infos.append(info)
+    except Exception :
+        # 有点粗暴
+        pass 
 
-    info = {}
-    for key in ['continentName', "countryName", 'provinceName', \
-                'confirmedCount', 'confirmedCount', 'suspectedCount', \
-                'curedCount', 'deadCount', 'updateTime']:
-        info[key] = ele.get(key)
 
-        try:
-            city_keys = ["cityName", "currentConfirmedCount",\
-                         "confirmedCount", "confirmedCount",\
-                         "curedCount", "deadCount", "locationId"]
-            for city in ele.get('cities'):
-                for key in city_keys:
-                    if key == "cityName":
-                        info[key] = city.get(key)
-                    else:
-                        info["city_" + key] = city.get(key)
-        except Exception:
-            pass
-        infos.append(info)
+import  csv 
+def savetocsv(data , savepath ) :
+    with open (savepath  ,'w' , newline= "" ,  encoding= "utf-8") as file : 
+        fieldnames = data[0].keys()
+        writer = csv.DictWriter(file, fieldnames=fieldnames)
+        writer.writeheader()
+        for line in  data :
+            writer.writerow(line)
 
-data = pd.DataFrame(infos)
-columns = ['continentName', "countryName", 'provinceName', 'confirmedCount', 'confirmedCount',
-           'suspectedCount', 'curedCount', 'deadCount', 'updateTime'] + \
-          ["cityName", "city_currentConfirmedCount", "city_confirmedCount", "city_confirmedCount",
-           "city_curedCount", "city_deadCount", "city_locationId"]
-data.to_csv("area.csv", columns=columns, index=None, )
+savetocsv( infos , "area.csv" )
+
