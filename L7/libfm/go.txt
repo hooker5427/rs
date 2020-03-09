@@ -1,0 +1,3 @@
+perl triple_format_to_libfm.pl -in train.csv -target 2 -delete_column 3, -separator ","
+perl triple_format_to_libfm.pl -in test.csv -target 2 -delete_column 3, -separator ","
+libFM -task r -method sgd -train train.csv.libfm -test test.csv.libfm -dim '1,1,8' -regular 0.1,0.1,0.3 -iter 30 -learn_rate 0.1 -out ml_out.txt 
