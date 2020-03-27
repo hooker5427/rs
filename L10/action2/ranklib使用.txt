@@ -1,0 +1,41 @@
+基本使用
+java -jar RankLib-patched.jar -train MQ2008/Fold1/train.txt -test MQ2008/Fold1/test.txt -validate MQ2008/Fold1/vali.txt -ranker 6 -metric2t NDCG@10 -metric2T NDCG@8 -save mymodel.txt
+java -jar RankLib-patched.jar -load mymodel.txt -test MQ2008/Fold1/test.txt -metric2T NDCG@10 
+
+baseline 
+
+java -jar RankLib-patched.jar -test MQ2008/Fold1/test.txt -metric2T NDCG@10 -idv output/baseline.ndcg.txt
+
+# 指定训练集  验证集  测试集
+
+    命令解释 ：
+        训练数据：MQ2008/Fold1/train.txt
+        测试数据：MQ2008/Fold1/test.txt
+        验证数据：MQ2008/Fold1/vali.txt
+        排名算法：6，LambdaMART
+        评估指标：NDCG，取排名前 10 个数据进行计算
+        测试数据评估指标：ERR，取排名前 10 个数据进行计算
+        保存模型：LambdaMART.txt
+
+java -jar RankLib-patched.jar -train MQ2008/Fold1/train.txt -test MQ2008/Fold1/test.txt -validate MQ2008/Fold1/vali.txt -ranker 1 -metric2t NDCG@10 -metric2T NDCG@8 -save RankNet.txt
+
+java -jar RankLib-patched.jar -train MQ2008/Fold1/train.txt -test MQ2008/Fold1/test.txt -validate MQ2008/Fold1/vali.txt -ranker 7 -metric2t NDCG@10 -metric2T NDCG@8 -save ListNet.txt
+
+
+java -jar RankLib-patched.jar -train MQ2008/Fold1/train.txt -test MQ2008/Fold1/test.txt -validate MQ2008/Fold1/vali.txt -ranker 6 -metric2t NDCG@10 -metric2T NDCG@8 -save  LambdaMart.txt
+
+
+# 模型评估
+java -jar RankLib-patched.jar -load RankNet.txt -test  MQ2008/Fold1/test.txt -metric2T NDCG@10 -idv output/ranknet.ndcg.txt
+
+java -jar RankLib-patched.jar -load ListNet.txt -test  MQ2008/Fold1/test.txt -metric2T NDCG@10 -idv output/listnet.ndcg.txt
+
+java -jar RankLib-patched.jar -load LambdaMart.txt -test  MQ2008/Fold1/test.txt -metric2T NDCG@10 -idv output/lambdamart.ndcg.txt
+
+
+# 交叉验证
+java -jar RankLib-patched.jar -train MQ2008/Fold1/train.txt -test MQ2008/Fold1/test.txt -tts 0.2 -kcv 10  -ranker 6 -metric2t NDCG@10 -metric2T NDCG@8 -save  LambdaMart1.txt
+
+
+# 模型对比  
+java -cp RankLib-patched.jar ciir.umass.edu.eval.Analyzer -all output/ -base baseline.ndcg.txt > analysis.txt
